@@ -20,35 +20,39 @@ public class TxtAppearanceEffect : MonoBehaviour
     private void Update()
     {
         if (gameObject.activeSelf)
-            StartCoroutine(routine: StartEffect());
-        StopCoroutine(routine: StartEffect());
+            StartCoroutine(routine: PerfomEffect());
+        StopCoroutine(routine: PerfomEffect());
     }
 
-    public IEnumerator StartEffect()
+    public IEnumerator PerfomEffect()
     {
         while (!invisibility)
         {
-            if (!invisibility)
-            {
-                textTransparence += Time.deltaTime * (255.0f / transition * 2);
-                if (textTransparence >= 255.0f)
-                    invisibility = true;
-            }
-            txt.color = new Color32(tmp.a, tmp.g, tmp.b, (byte)textTransparence);
+            TxtAppearance();
             yield return new WaitForSeconds(0.05f);
         }
         yield return new WaitForSeconds(1f);
         while (invisibility)
         {
-            if (invisibility)
-            {
-                textTransparence -= Time.deltaTime * (255.0f / transition * 2);
-                if (textTransparence <= 0.0f)
-                    invisibility = false;
-            }
-            txt.color = new Color32(tmp.a, tmp.g, tmp.b, (byte)textTransparence);
+            TxtDisappearing();
             yield return new WaitForSeconds(0.04f);
         }
         gameObject.SetActive(false);
+    }
+
+    private void TxtAppearance()
+    {
+        textTransparence += Time.deltaTime * (255.0f / transition * 2);
+        if (textTransparence >= 255.0f)
+            invisibility = true;
+        txt.color = new Color32(tmp.a, tmp.g, tmp.b, (byte)textTransparence);
+    }
+
+    private void TxtDisappearing()
+    {
+        textTransparence -= Time.deltaTime * (255.0f / transition * 2);
+        if (textTransparence <= 0.0f)
+            invisibility = false;
+        txt.color = new Color32(tmp.a, tmp.g, tmp.b, (byte)textTransparence);
     }
 }

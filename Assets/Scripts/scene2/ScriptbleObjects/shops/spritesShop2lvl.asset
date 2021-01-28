@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f82bc7406db9fb46bc56cabfb433514, type: 3}
   m_Name: spritesShop2lvl
   m_EditorClassIdentifier: 
-  spriteDef: {fileID: 21300000, guid: a4b078ac9280b454996442cff66a544f, type: 3}
+  spriteDef: {fileID: 21300000, guid: de87bfe8f0c2eab43976f4c6ea13b25d, type: 3}
   spriteBlue: {fileID: 21300000, guid: 8a94a0b314bd38a4d8d54da94038f2d3, type: 3}
   spriteGreen: {fileID: 21300000, guid: 030e76b90a9b9c44f86b679910b7d83a, type: 3}
   spritePurple: {fileID: 21300000, guid: 7a347a08585670e48bd90f72b093f46a, type: 3}

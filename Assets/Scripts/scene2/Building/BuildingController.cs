@@ -1,119 +1,80 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 
-public class BuildingController : MonoBehaviour
-{ 
-    [SerializeField] BuildingData.typeBuilding typeBuilding;
+namespace Building
+{
+    public class BuildingController : Singleton<BuildingController>,
+                                      IBuildings, IBuilding
+    {        
+        private Building[] buildings = GameObject.FindObjectsOfType<Building>();
+        public static string nameCurrent;
 
-    [System.NonSerialized] public spritesManager spritesManager;
-    BuildingData buildingData;
-    Transform inscriptionSale;
+        public int costUpdate => buildings[Current].data.costUpdate; 
+        public int costBuilding => buildings[Current].data.costBuilding; 
+        public int lvl => buildings[Current].data.lvl; 
 
-    public int startingCostBuilding { get => buildingData.startingCostBuilding; private set { } }
-    public int lvl { get => buildingData.lvl; }
-    public bool isSale { get => buildingData.isSale; set => buildingData.isSale = value; }
-    public string owner { get => buildingData.owner; set => buildingData.owner = value; }
-    public int costBuilding { get => buildingData.costBuilding; private set => buildingData.costBuilding = value; }
-    public int costGoods { get => buildingData.costGoods; }
-    public int costUpdate { get => buildingData.costUpdate; }
-    public string nameBuilding { get => buildingData.name; }
-
-    void Start()
-    {
-        buildingData = new BuildingData(typeBuilding);
-        spritesManager = GetComponent<spritesManager>();
-        inscriptionSale = gameObject.transform.Find("Sale");
-        showInscriptionSale("");
-    }
- 
-    void IsCostAcceptable()
-    {
-        if (costBuilding < startingCostBuilding / 2 ||
-           costBuilding > startingCostBuilding * 2)
-            costBuilding = startingCostBuilding; 
-    }
-
-    void OnMouseDown() 
-    {
-        if (!EventSystem.current.IsPointerOverGameObject())
-        {
-            // заполнение инф
-            UI.txtNameBuilding.text = nameBuilding +
-                            " урв:" + buildingData.lvl + " (" + owner + ")";
-            UI.txtCost.text = costBuilding.ToString();
-            UI.txtIncome.text = costGoods.ToString();
-            UI.txtUpgrade.text = costUpdate.ToString();
-
-            Scripts.contInfo.GetBuildingName(gameObject.name);
-            UpdateUICost();
-            Scripts.contInfo.setNameBtnAction();
-            Scripts.contInfo.SetBtnUpgrate();
+        public string owner {
+            get => buildings[Current].data.owner; 
+            set => buildings[Current].data.owner = value; 
         }
-    }
+        
+        public bool isSale {
+            get => buildings[Current].data.isSale;
+            set => buildings[Current].data.isSale = value; 
+        }        
 
-    private void UpdateUICost() // можжно вынести в cпец класс с обн UI
-    {
-        // меняем цвет цены в контейнер инфо
-        UI.txtLastMonthCost.text = buildingData.oldcostBuilding.ToString();
-        UI.txtLastMonthIncome.text = buildingData.oldCostGoods.ToString();
-        UIRefresher.ChangeColor(buildingData.oldcostBuilding, UI.txtCost.text, ref UI.txtCost);
-        UIRefresher.ChangeColor(costGoods, UI.txtLastMonthIncome.text, ref UI.txtIncome);
-    }
-
-    public void changePrice()
-    {
-        buildingData.oldcostBuilding = costBuilding;
-        buildingData.oldCostGoods = costGoods;
-        int rand = UnityEngine.Random.Range(-costBuilding / 3, costBuilding / 3);
-        costBuilding += rand;
-        IsCostAcceptable();
-        buildingData.CountCostGoods();
-    }
-
-    public void ChangeCostBuilding(int cost)
-    {
-        buildingData.costBuilding = cost;
-        buildingData.CountCostGoods();
-        buildingData.CountCostUpdate();
-    }
-
-    public void showInscriptionSale(string nameCurrentPlayer)
-    {
-        if (isSale && nameCurrentPlayer == owner) // я владелец и продаю
-            IncriptSaleVisible(false); 
-        else if (isSale)
-            IncriptSaleVisible(true);
-    }
-
-    public void IncriptSaleVisible(bool visible) 
-    {
-        inscriptionSale.gameObject.SetActive(visible);   
-    }
-
-    public void Upgrade()
-    {
-        ++buildingData.lvl;
-       ChangeCostBuilding((int)(buildingData.costBuilding * 1.4f));
-       buildingData.startingCostBuilding = buildingData.costBuilding;
-       spritesManager.changeSprite(lvl); 
-    }
-
-    public void isBroken(string nameCurrentPlayer)
-    {
-        if(nameCurrentPlayer == owner)
+        private int Current
         {
-            --buildingData.TimeToFailure;
-            if(buildingData.TimeToFailure == 0)
-            {
-                Broken();
-                buildingData.TimeToFailure = 6;
+            get
+            {                
+                int i = 0;
+                while (buildings[i].name != nameCurrent)
+                {
+                    ++i;
+                    if (i >= buildings.Length - 1)
+                         break;
+                }
+                return i;
             }
         }
-    }
-    public void Broken()
-    {
-        buildingData.oldcostBuilding = buildingData.costBuilding;
-        ChangeCostBuilding(0);
-        //добваить картинку гаечного ключа (а лучше анимацию)
+
+        public void ChangePrice()
+        {
+            int newCost;
+            for (int i = 0; i < buildings.Length; i++)
+            {
+                newCost = buildings[i].data.costBuilding + Math.Random(buildings[i].data.costBuilding);
+                newCost = Math.IsNumAcceptable(newCost, buildings[i].data.startingCostBuilding);
+                buildings[i].ChangeCosts(newCost);
+            }    
+        }        
+        public void UpdateBuildings() 
+        {
+            for (int i = 0; i < buildings.Length; i++)
+            {
+                buildings[i].ShowInscriptionSale(Players.current.Name); 
+                //buildings[i].isBroken(Players.current.Name); // это для логики сломанных объектов
+            }
+        }
+        public void CountIncomeCurrentPlayer()
+        {
+            for (int i = 0; i < buildings.Length; i++)
+            if (Players.current.Name  == buildings[i].data.owner) // если игрок владелец строения
+                Players.current.Income += buildings[i].data.costBuilding; 
+        }
+
+        public void IncriptSaleVisible(bool visible)
+        {
+            buildings[Current].IncriptSaleVisible(visible); 
+        }
+
+        public void ChangeSpriteColor(Color color)
+        {
+            buildings[Current].spritesManager.ChangeSpriteColor(color); 
+        }
+
+        public void Upgrade()
+        {
+            buildings[Current].Upgrade();
+        }
     }
 }

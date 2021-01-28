@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEditor.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
-        assembly.text = "v " + "0.0.2.1";
+        assembly.text = "v " + "0.0.2.7";
     }
 
     public void StartLocalGameSettings()
@@ -23,7 +24,7 @@ public class MainMenu : MonoBehaviour
     public void StartGame()
     {
         // Получение данных для старта игры                             
-        GameInfo.startCapital = GameInfo.GetDataOfType<Int32>("SliderStartCapital"); //StartCapital
+        GameInfo.startCapital = GameInfo.GetDataOfType<Int32>("SliderStartCapital");
         GameInfo.movingTime = GameInfo.GetDataOfType<Int32>("SliderTime");
         // получаем масив имен игроков
         int i = 1;
@@ -34,6 +35,7 @@ public class MainMenu : MonoBehaviour
             }
         GetPlayerColors();
         SceneManager.LoadScene("GameScene");
+        EditorSceneManager.OpenScene("GameScene");
         SceneManager.UnloadSceneAsync("MainMenu");
     }
 

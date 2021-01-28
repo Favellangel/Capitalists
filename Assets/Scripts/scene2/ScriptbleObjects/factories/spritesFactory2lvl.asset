@@ -12,7 +12,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f82bc7406db9fb46bc56cabfb433514, type: 3}
   m_Name: spritesFactory2lvl
   m_EditorClassIdentifier: 
-  spriteDef: {fileID: 0}
-  spriteBlue: {fileID: 0}
-  spriteGreen: {fileID: 0}
-  spritePurple: {fileID: 0}

@@ -1,59 +1,37 @@
 ﻿using UnityEngine.SceneManagement;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-public class ContainerResult : MonoBehaviour, IPointerEnterHandler
+public class ContainerResult : MonoBehaviour
 {
-    GameObject tmp;
-    GameManager gameManager;
-    bool isWin;
+    [SerializeField] Transform Blocking;
+    bool isWin = false;
 
     void OnEnable()
     {
-            tmp = GameObject.Find("GameObjects");
-            gameManager = tmp.GetComponent<GameManager>();
-            if (gameManager.players == null)
-                return;
-            for (int i = 0; i < gameManager.players.playersData.Count; i++)
-            {
-                if (gameManager.players.playersData[i].isWin)
-                    isWin = true;
-            }
-            if (isWin)
-                UpdateUI(Constants.winner);
-            else
-                UpdateUI(Constants.losser);
-        // все равно можно щелкать по объектам. Нужно заблочить все. То есть пока не нажмешь ок. Ни чего нельзя делать\
+        if (Players.all.IsAnyWin())
+        {
+            isWin = true;
+            UpdateUI(Constants.winner);
+        }
+        else if(Players.all.IsAnyLose())
+            UpdateUI(Constants.losser);
     }
 
-   /* private void Update()
+    private void UpdateUI(string result) // вынести в UIRefresher
     {
-        if (!EventSystem.current.IsPointerOverGameObject())
-        {
-
-        }
-    }*/
-
-    private void UpdateUI(string result)
-    {
-        UI.txtResult.text = result;
-        UI.txtWinPlayer.text = gameManager.players.nameCurent;
+        Blocking.transform.position = new Vector3(Blocking.transform.position.x, Blocking.transform.position.y, 0);
+        UI.txtResult.text = result; 
+        UI.txtWinPlayer.text = Players.current.Name;
     }
 
     public void Click_On_Btn()
     {
-            if (isWin)
-            {
-                SceneManager.UnloadSceneAsync("GameScene"); 
-                SceneManager.LoadScene("MainMenu");
-                gameManager.players.Destroy();
-            }
+        if (isWin)
+        {
+            garbageCollector.FreeMemory();
+            garbageCollector.ChangeScene();
+        }
             else
-                gameObject.SetActive(false);
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-
+                gameObject.SetActive(false);       
     }
 }

@@ -7,89 +7,69 @@ public class GameManager : MonoBehaviour
     float maxMovingTime;
     float movingTime;
 
-    BuildingController[] buildings;
-
-    public PlayersController players { get; set; }
-
     private void Start()
     {
-        buildings = GameObject.FindObjectsOfType<BuildingController>();
-        players = PlayersController.GetInstance();
         maxMovingTime = GameInfo.movingTime;
         UpdateUIPlayer();
         month = 0;
         StartCoroutine(routine: CoroutineTime());
     }
 
+    private void Update()
+    {
+        UI.txtCapital.text = Players.current.Capital.ToString();
+    }
+
     private void UpdateUIPlayer()
     {
-        UIRefresher.UpdateUIPlayer(players.nameCurent, players.colorCurent);
+        UIRefresher.Player(Players.current.Name, 
+                                   Players.current.Color); 
         movingTime = maxMovingTime;
-        UIRefresher.UpdateUITimeAndCapital(movingTime.ToString(),
-                                            players.capitalCurent.ToString());
+        UI.txtMovingTime.text = movingTime.ToString();
     }
 
     private IEnumerator CoroutineTime()
     {
-        while (true)
-        {
-            UIRefresher.UpdateUITimeAndCapital(movingTime.ToString(), 
-                                               players.capitalCurent.ToString());
-            yield return new WaitForSeconds(1);
-            movingTime -= 1;
+        yield return new WaitForSeconds(1);
+         while (true)
+         {
+            UI.txtMovingTime.text = movingTime.ToString();
+             yield return new WaitForSeconds(1);
+             movingTime -= 1;
             if (movingTime <= 0)
-                StartCoroutine(routine: NextPlayer());
-        }
+                NextPlayer();
+         }
     }
 
-    private IEnumerator NextPlayer()
+    public void NextPlayer()
     {
-        //начать анимацию часиков
-        CountIncomeCurrentPlayer();
-        resultGame();
-        players.NextPlayer();
-        UpdateUIPlayer();
-        SetIncriptionSale();
+        Players.current.Income = 0;
+        Buildings.all.CountIncomeCurrentPlayer();
+        Players.current.Capital += Players.current.Income;
 
-        if (players.turn == 0) // если очередь игроков закончилась
+        resultGame();
+        Players.all.NextPlayer();
+        if (Players.current.Income > 0) 
+            UIRefresher.TxtResizingEffect(new Color(0, 1, 0, 1), UI.resizingEffect);
+        UpdateUIPlayer();
+        Buildings.all.UpdateBuildings();
+
+        if (Players.all.Turn == 0) // если очередь игроков закончилась
             month++;
         if(Isquarter())
-            for (int i = 0; i < buildings.Length; i++)
-                buildings[i].changePrice();
-        
-        UI.containerInfo.SetActive(false);        
-        yield return new WaitForSeconds(0.5f);
-        //завершить анимацию
-    }
-
-    private void CountIncomeCurrentPlayer()
-    {
-        for (int i = 0; i < buildings.Length; i++)
-            if (players.nameCurent == buildings[i].owner) // если игрок владелец строения
-                players.incomeCurrent += buildings[i].costGoods;
-        players.playersData[players.turn].сapital += players.incomeCurrent; 
-        players.incomeCurrent = 0;
+            Buildings.all.ChangePrice();        
+        UI.containerInfo.SetActive(false);
     }
 
     private void resultGame()
     {
-        if (players.IsWin())
+        if (Players.all.IsAnyWin())
         {
             UI.containerResult.SetActive(true);
             StopAllCoroutines();
         }
-        if (players.IsLose())
+        if (Players.all.IsAnyLose())
             UI.containerResult.SetActive(true);
-    }
-
-    public void SetIncriptionSale() // переименовать в UpdateBuildings
-    {
-        //SetIncriptionSale
-        for (int i = 0; i < buildings.Length; i++)
-        {
-            buildings[i].showInscriptionSale(players.nameCurent);
-            buildings[i].isBroken(players.nameCurent);
-        }
     }
 
     public bool Isquarter()
@@ -100,10 +80,5 @@ public class GameManager : MonoBehaviour
             return true;
         }
         return false;
-    }
-
-    public void Click_On_BtnNext()
-    {
-        StartCoroutine(routine: NextPlayer());       
     }
 }

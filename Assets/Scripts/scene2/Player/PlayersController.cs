@@ -1,108 +1,80 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayersController 
+namespace Player
 {
-    private static PlayersController instance;
-
-    public int countPlayer { get; private set; }
-    public List<PlayerData> playersData;
-    public int turn { get; private set; }
-
-    public Color colorCurent { get => playersData[turn].color; }
-    public string nameCurent { get => playersData[turn].nicName; }
-    public int capitalCurent { get => playersData[turn].сapital; }
-    public int incomeCurrent { get => playersData[turn].income; set => playersData[turn].income = value; }
-
-    public PlayersController()
+    public class PlayersController : Singleton<PlayersController>,
+                                     IPlayer, IPlayers
     {
-        countPlayer = GameInfo.namePlayers.Count;
-        playersData = new List<PlayerData>();
-        for (int i = 0; i < countPlayer; i++)
-            playersData.Add(new PlayerData());
-        turn = 0;
-    }
+        private List<Player> players;
+        public int countPlayer { get; private set; }
+        public int turn { get; private set; }
 
-    public void Destroy()
-    {
-        instance = null;
-    }
+        public string Name => players[turn].data.nicName;
+        public Color Color => players[turn].data.color;
+        public int Capital { get => players[turn].data.сapital; set => players[turn].data.сapital = value; } 
+        public int Income { get => players[turn].data.income; set => players[turn].data.income = value; }
 
-    public static PlayersController GetInstance()
-    {
-        if (instance == null)
-            instance = new PlayersController();
-        return instance;
-    }
+        public int Turn => turn;
 
-    private bool IsMillionaire()
-    {
-        if (playersData[turn].сapital >= 1000000)
-            return true;
-        return false;
-    }
-
-    private bool IsBankrupts()
-    {
-        int countBankrupts = 0;
-        for (int i = 0; i < playersData.Count; i++)
-            if (IsBankrupt(i))
-                countBankrupts++;
-        // если все банкроты
-        if (countBankrupts == playersData.Count)
-            return true;
-        return false;
-    }
-
-    private bool IsBankrupt(int turn)
-    {
-        if (playersData[turn].сapital <= 0 &&
-            playersData[turn].income < 0)
-            return true;
-        return false;
-    }
-
-    public void NextPlayer()
-    {
-        ++turn;
-        if (turn >= countPlayer)
+        public PlayersController()
+        {
+            countPlayer = GameInfo.namePlayers.Count;
+            players = new List<Player>();
+            for(int i = 0; i < countPlayer; i++)
+                players.Add(new Player());
             turn = 0;
-    }
-
-    public bool PurchaseBuilding(int cost)
-    {
-        if (cost <= playersData[turn].сapital)
-        {
-            playersData[turn].сapital -= cost;
-            return true;
         }
-        return false;
-    }
 
-    public void SellBuilding(string name, int cost) 
-    {
-        for (int i = 0; i < playersData.Count; i++)
-            if (playersData[i].nicName == name)
-                playersData[i].сapital += cost;
-    }
-
-    public bool IsWin()
-    {
-        if (IsBankrupts() || IsMillionaire())
+        private bool IsBankrupts()
         {
-            playersData[turn].isWin = true;
-            return true;
+            int countBankrupts = 0;
+            for (int i = 0; i < players.Count; i++)
+                if (players[i].IsBankrupt())
+                    countBankrupts++;
+            // если все банкроты
+            if (countBankrupts == players.Count)
+                return true;
+            return false;
         }
-        return false;
-    }
 
-    public bool IsLose()
-    {
-        if (IsBankrupt(turn))
+        public void NextPlayer()
         {
-            playersData.RemoveAt(turn);
-            return true;
+            ++turn;
+            if (turn >= countPlayer)
+                turn = 0;
         }
-        return false;
+
+        public void SellBuilding(string name, int cost) // опустить в player
+        {
+            for (int i = 0; i < players.Count; i++)
+                if (players[i].data.nicName == name) 
+                   players[i].data.сapital += cost;
+        }
+
+        public bool IsAnyWin()
+        {
+            if (IsBankrupts() || players[turn].IsMillionaire())
+            {
+                players[turn].data.isWin = true;
+                return true;
+            }
+            return false;
+        }
+
+        public bool IsAnyLose()
+        {
+            if (players[turn].IsBankrupt())
+            {
+                players.RemoveAt(turn);
+                return true;
+            }
+            return false;
+        }
+
+        public bool PurchaseBuilding(int cost)
+        {
+            return players[turn].PurchaseBuilding(cost);
+        }
     }
 }

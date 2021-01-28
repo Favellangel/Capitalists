@@ -1,19 +1,24 @@
 ﻿using UnityEngine;
 
-public class PlayerData
+namespace Player
 {
-    public Color color { get; }
-    public string nicName { get; }
-    public int сapital { get; set; }
-    public int income { get; set; }
-    public bool isWin { get; set; }
-
-    public PlayerData()
+    public class PlayerData
     {
-        color = GameInfo.colors.Dequeue();
-        nicName = GameInfo.namePlayers.Dequeue();
-        сapital = GameInfo.startCapital;
-        income = 0;
-        isWin = false;
+        public Color color { get; }
+        public string nicName { get; }
+        public int сapital { get; set; }
+        public int income { get; set; }
+        public bool isWin { get; set; }
+
+        public PlayerData()
+        {
+            color = GameInfo.colors.Dequeue();
+            nicName = GameInfo.namePlayers.Dequeue();
+            сapital = GameInfo.startCapital;
+            income = 0;
+            isWin = false;
+        }
     }
 }
+
+

@@ -24,6 +24,8 @@ public class UILinker : MonoBehaviour
         //  получение объектов из ContainerPlayer
         tmp = GameObject.Find("Color Player");
         UI.colorPlayer = tmp.GetComponent<Image>();
+        tmp = GameObject.Find("TxtCapital");
+        UI.resizingEffect = tmp.GetComponent<TxtResizingEffect>();
         UI.txtNamePlayer = GetFrom("TxtPlayer");
         UI.txtMovingTime = GetFrom("TxtValueTime");
         UI.txtCapital = GetFrom("TxtCapital");

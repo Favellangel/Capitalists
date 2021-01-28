@@ -2,66 +2,51 @@
 
 public class ContainerInfo : MonoBehaviour
 {
-    GameObject tmp;
-    GameManager gameManager;
-    BuildingController building;
-    string buildingName;
-
-    private void OnEnable()
+    private void OnEnable() // ссылка на container info создается раньше чем на остальное
     {
-        tmp = GameObject.Find("GameObjects");
-        gameManager = tmp.GetComponent<GameManager>();
-    }
-
-    public void GetBuildingName(string name)
-    {
-        buildingName = name;
-    }
-
-    private void setBuilding()
-    {
-        tmp = GameObject.Find(buildingName);
-        building = tmp.GetComponent<BuildingController>();
-    }
-
-    public void BuyingBuilding()
-    {
-        if (gameManager.players.PurchaseBuilding(building.costBuilding))
+        if(UI.btnAction != null)
         {
-            if (building.owner != Constants.neutral)
-                gameManager.players.SellBuilding(building.owner, building.costBuilding);
-            building.owner = gameManager.players.nameCurent;
-            building.isSale = false;
+            setNameBtnAction();
+            SetBtnUpgrate();
+        }
+    }
+    public void BuyingBuilding() // эти методы должны быть в объединеном классе контроллере
+    {        
+        if (Players.current.PurchaseBuilding(Buildings.current.costBuilding))
+        {
+            UIRefresher.TxtResizingEffect(new Color(1, 0, 0, 1), UI.resizingEffect);
+            if (Buildings.current.owner != Constants.neutral)
+                Players.all.SellBuilding(Buildings.current.owner, Buildings.current.costBuilding);
+            Buildings.current.owner = Players.current.Name;
+            Buildings.current.isSale = false;
             UI.txtBtnAction.text = Constants.sell;
-            building.IncriptSaleVisible(false);
-            building.spritesManager.changeSpriteColor(gameManager.players.colorCurent);
+            Buildings.current.IncriptSaleVisible(false);
+            Buildings.current.ChangeSpriteColor(Players.current.Color);
         }
         else
             UIRefresher.MsgInsufficientFunds();
     }
 
-    public void SetBtnUpgrate()
+    public void SetBtnUpgrate() // эти методы должны быть в объединеном классе контроллере
     {
         UI.btnUpdate.SetActive(false);
-        if (gameManager.players.nameCurent == building.owner)
-            if(building.lvl > 0 && building.lvl  < 5)
+        if (Players.current.Name == Buildings.current.owner)
+            if(Buildings.current.lvl > 0 && Buildings.current.lvl  < 5)
                 UI.btnUpdate.SetActive(true);
     }
 
-    public void setNameBtnAction() 
+    public void setNameBtnAction() // эти методы должны быть в объединеном классе контроллере
     {
-        UI.containerInfo.SetActive(true);
         UI.btnAction.SetActive(true);
-        setBuilding();
-        //   если текущий игрок владелец и объект продается
-        if (building.owner == gameManager.players.nameCurent && building.isSale)
+        //   если текущий игрок владелец и объект продается         
+        if (Buildings.current.owner == Players.current.Name && Buildings.current.isSale)
             UI.txtBtnAction.text = Constants.RemoveFromSale;
         // назв купить        если дом государственный или выставлен другими игроками
-        else if (building.owner == Constants.neutral || building.isSale)
+        else if (Buildings.current.owner == Constants.neutral || Buildings.current.isSale)
             UI.txtBtnAction.text = Constants.buy;
-        else if (building.owner == gameManager.players.nameCurent)
+        else if (Buildings.current.owner == Players.current.Name)
         {
-            if (!building.isSale) // продать    если дом твой и не выставлен
+            if (!Buildings.current.isSale) // продать    если дом твой и не выставлен
                 UI.txtBtnAction.text = Constants.sell;
             else // снять с продажи      если дом твой и выставлен на продажу  
                 UI.txtBtnAction.text = Constants.RemoveFromSale;
@@ -72,28 +57,27 @@ public class ContainerInfo : MonoBehaviour
 
     public void Click_On_BtnAction()
     {
-        setBuilding();
         if (UI.txtBtnAction.text == Constants.buy)
             BuyingBuilding();
         else if (UI.txtBtnAction.text == Constants.sell)
         {
             UI.txtBtnAction.text = Constants.RemoveFromSale;
-            building.isSale = true;
+            Buildings.current.isSale = true;
         }
         else if (UI.txtBtnAction.text == Constants.RemoveFromSale)
         {
             UI.txtBtnAction.text = Constants.sell;
-            building.isSale = false;
+            Buildings.current.isSale = false;
         }
         UI.containerInfo.SetActive(false);
     }
 
     public void Click_On_BtnUgrade()
-    {
-        if (gameManager.players.PurchaseBuilding(building.costUpdate))
+    { 
+        if (Players.current.PurchaseBuilding(Buildings.current.costUpdate))
         {
-            building.Upgrade();
-            building.spritesManager.changeSpriteColor(gameManager.players.colorCurent);
+            Buildings.current.Upgrade();
+            Buildings.current.ChangeSpriteColor(Players.current.Color);
             UI.containerInfo.SetActive(false);
             //произвести анимацию перехода строения на новый уровень
         }

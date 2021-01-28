@@ -14,9 +14,10 @@
     public int oldcostBuilding;
     public int oldCostGoods;
 
-    private float k;
-    private float updateRate;
+    public float kUpdate;
+    public float kGoods;
     public int lvl;
+
     public enum typeBuilding
     {
         Home,
@@ -45,26 +46,16 @@
         isSale = true;
     }
 
-    void Create(string name, int costBuilding, float updateRate, float k)
+    void Create(string name, int costBuilding, float kUpdate, float kGoods)
     {
         this.name = name;
         this.costBuilding = costBuilding;
         this.oldcostBuilding = costBuilding;
-        this.updateRate = updateRate;
-        CountCostUpdate();
-        this.k = k;
-        CountCostGoods();
+        this.kUpdate = kUpdate;
+        costUpdate = Math.calculatePercentage(costBuilding, kUpdate);
+        this.kGoods = kGoods;
+        costGoods = Math.calculatePercentage(costBuilding, kGoods);
         this.oldCostGoods = costGoods;
-    }
-
-    public void CountCostGoods()
-    {
-        costGoods = (int)(costBuilding * k);
-    }
-
-    public void CountCostUpdate()
-    {
-        costUpdate = (int)(costBuilding * updateRate);
     }
 
 }

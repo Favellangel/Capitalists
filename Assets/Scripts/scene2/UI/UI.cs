@@ -4,6 +4,7 @@ using UnityEngine;
 public static class UI
 {
     // объекты из ContainerPlayer
+    public static TxtResizingEffect resizingEffect;
     public static Image colorPlayer;
     public static Text txtNamePlayer;
     public static Text txtMovingTime;
