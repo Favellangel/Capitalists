@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f82bc7406db9fb46bc56cabfb433514, type: 3}
+  m_Name: spritesShop1lvl
+  m_EditorClassIdentifier: 
+  spriteDef: {fileID: 21300000, guid: 3a7f384868121284d9892feae83e89b8, type: 3}
+  spriteBlue: {fileID: 21300000, guid: 0a7d6b1b88f4e8545941ec6e8e2ba8a1, type: 3}
+  spriteGreen: {fileID: 21300000, guid: 4308b0b38260dff45acf5468e34110b3, type: 3}
+  spritePurple: {fileID: 21300000, guid: ea05859a255ea8a4ea138e2cc050f649, type: 3}

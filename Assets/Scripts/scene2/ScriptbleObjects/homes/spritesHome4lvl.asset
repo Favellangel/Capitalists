@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f82bc7406db9fb46bc56cabfb433514, type: 3}
+  m_Name: spritesHome4lvl
+  m_EditorClassIdentifier: 
+  spriteDef: {fileID: 21300000, guid: a72f6338b42e8714f9886a767f19bab5, type: 3}
+  spriteBlue: {fileID: 21300000, guid: 64e321c2ee231554aa12c421add21dfc, type: 3}
+  spriteGreen: {fileID: 21300000, guid: 70a376a632d0b16489a3b8d05c35e6c6, type: 3}
+  spritePurple: {fileID: 21300000, guid: 68dacc48409df8b44a7a17de6874d52d, type: 3}
