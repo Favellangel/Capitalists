@@ -5,7 +5,7 @@ namespace Building
     public class BuildingController : Singleton<BuildingController>,
                                       IBuildings, IBuilding
     {        
-        private Building[] buildings = GameObject.FindObjectsOfType<Building>();
+        private Building[] buildings = Object.FindObjectsOfType<Building>();
         public static string nameCurrent;
 
         public int costUpdate => buildings[Current].data.costUpdate; 
@@ -40,10 +40,14 @@ namespace Building
         public void ChangePrice()
         {
             int newCost;
+            int cost;
             for (int i = 0; i < buildings.Length; i++)
             {
-                newCost = buildings[i].data.costBuilding + Math.Random(buildings[i].data.costBuilding);
-                newCost = Math.IsNumAcceptable(newCost, buildings[i].data.startingCostBuilding);
+                cost = buildings[i].data.costBuilding;
+                newCost = cost + Random.Range(-cost / 3, cost / 3);
+                //Math.Random(buildings[i].data.costBuilding);
+                //newCost = Math.IsNumAcceptable(newCost, buildings[i].data.startingCostBuilding);
+                newCost = Math.IsNumAcceptable(newCost, cost);
                 buildings[i].ChangeCosts(newCost);
             }    
         }        
@@ -55,7 +59,7 @@ namespace Building
                 //buildings[i].isBroken(Players.current.Name); // это для логики сломанных объектов
             }
         }
-        public void CountIncomeCurrentPlayer()
+        public void CountIncomeCurrentPlayer() // должно быть в общем для Building и player классе
         {
             for (int i = 0; i < buildings.Length; i++)
             if (Players.current.Name  == buildings[i].data.owner) // если игрок владелец строения

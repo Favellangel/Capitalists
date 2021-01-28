@@ -3,6 +3,7 @@ using UnityEngine;
 
 public static class UI
 {
+    public static GameManager gameManager;
     // объекты из ContainerPlayer
     public static TxtResizingEffect resizingEffect;
     public static Image colorPlayer;

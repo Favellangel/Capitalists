@@ -8,6 +8,7 @@ public class UILinker : MonoBehaviour
 
     void Start()
     {
+        UI.gameManager = GameObject.Find("GameObjects").GetComponent<GameManager>();
         GetContainerPlayer();
         GetContainerInfo();
         GetContainerResult();

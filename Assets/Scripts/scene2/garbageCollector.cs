@@ -4,7 +4,9 @@ public static class garbageCollector
 {
     public static void FreeMemory()
     {
+        UI.gameManager.enabled = false;
         Players.all.Destroy();
+        Buildings.all.Destroy();
     }
 
     public static void ChangeScene()

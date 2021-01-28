@@ -36,7 +36,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - hidden
   - 
   m_SortingLayers:
   - name: Default

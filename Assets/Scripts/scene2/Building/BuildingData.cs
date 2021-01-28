@@ -30,17 +30,17 @@
         switch (building)
         {
             case typeBuilding.Home:
-                Create(Constants.home, 3000, 0.50f, 0.55f);
+                Create(Txt.home, 3000, 0.50f, 0.55f);
                 break;
             case typeBuilding.Shop:
-                Create(Constants.shop, 7000, 0.55f, 0.45f);
+                Create(Txt.shop, 7000, 0.55f, 0.45f);
                 break;
             case typeBuilding.Factory:
-                Create(Constants.factory, 14000, 0.6f, 0.4f);
+                Create(Txt.factory, 14000, 0.6f, 0.4f);
                 break;
         }
         startingCostBuilding = costBuilding;
-        owner = Constants.neutral;
+        owner = Txt.neutral;
         TimeToFailure = TimeToFailureDef;
         this.lvl = 1;
         isSale = true;

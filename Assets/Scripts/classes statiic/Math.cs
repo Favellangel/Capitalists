@@ -16,21 +16,20 @@
     /// </summary>
     /// <param name="num">проверяемое число</param>
     /// <param name="numBorder">число, от которого берется диапазон</param>
-    /// <returns></returns>
-    public static int IsNumAcceptable(this int num, int numBorder) 
+    /// <returns>Если входит, возвращет это число, иначе возвращает numborder</returns>
+    public static int IsNumAcceptable(this int num, int numBorder)
     {
         int min = numBorder / 2;
         int max = numBorder * 2;
         if (num > min || num < max)
             return num;
-        else
-            return numBorder;
+        return numBorder;
     }
     /// <summary>
     /// возвращает рандомное число(+- 1/3 от num)
     /// </summary>
     /// <param name="num"></param>
-    /// <returns></returns>
+    /// <returns></returns>    
     public static int Random(int num)
     {
         int rand = UnityEngine.Random.Range(-num / 3, num / 3);

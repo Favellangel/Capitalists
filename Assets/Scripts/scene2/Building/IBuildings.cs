@@ -5,5 +5,6 @@
         void ChangePrice();
         void UpdateBuildings();
         void CountIncomeCurrentPlayer();
+        void Destroy();
     }
 }

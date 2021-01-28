@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityEditor.SceneManagement;
+using System.Collections.Generic;
 
 public class MainMenu : MonoBehaviour
 {
@@ -10,41 +10,24 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject localGameSettings;
     [SerializeField] private Text assembly;
 
+    List<string> nicks = new List<string>();
+
     void Start()
     {
-        assembly.text = "v " + "0.0.2.7";
+        assembly.text = "v " + "0.0.3.3";
     }
 
-    public void StartLocalGameSettings()
+    private void ExportData()
     {
-        mainMenu.SetActive(false);
-        localGameSettings.SetActive(true);
-    }
-
-    public void StartGame()
-    {
-        // Получение данных для старта игры                             
         GameInfo.startCapital = GameInfo.GetDataOfType<Int32>("SliderStartCapital");
         GameInfo.movingTime = GameInfo.GetDataOfType<Int32>("SliderTime");
-        // получаем масив имен игроков
-        int i = 1;
-        while(GameObject.Find("PlayerName" + i))
-            {
-            GameInfo.namePlayers.Enqueue(GameInfo.GetDataOfType<string>("PlayerName" + i));
-                ++i;
-            }
+        // передаем масив имен игроков в стат класс
+        for (int i = 0; GameObject.Find("PlayerName" + (i + 1)); i++)
+            GameInfo.namePlayers.Enqueue(nicks[i]);
         GetPlayerColors();
-        SceneManager.LoadScene("GameScene");
-        EditorSceneManager.OpenScene("GameScene");
-        SceneManager.UnloadSceneAsync("MainMenu");
     }
 
-    public void ExitGame()
-    {
-        Application.Quit();
-    }
-
-    public void GetPlayerColors()
+    private void GetPlayerColors()
     {
         int i = 1;
         GameObject tmp;
@@ -58,4 +41,30 @@ public class MainMenu : MonoBehaviour
         }
     }
 
+    public void StartLocalGameSettings()
+    {
+        mainMenu.SetActive(false);
+        localGameSettings.SetActive(true);
+    }
+
+    public void StartGame()
+    {
+        // получаем масив имен игроков
+        for (int i = 1; GameObject.Find("PlayerName" + i); i++)
+            nicks.Add(GameInfo.GetDataOfType<string>("PlayerName" + i));
+        // проверяем ники на коректность
+        if (NickChecker.IsCorrect(nicks))
+        {
+            ExportData();
+            SceneManager.LoadScene("GameScene");
+            SceneManager.UnloadSceneAsync("MainMenu");
+            return;
+        }
+        print(Txt.NickUncorrect); // иначе выдать сообщение "ник слишком длинный или написан не коректно"
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
 }

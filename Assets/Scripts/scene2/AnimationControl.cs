@@ -10,6 +10,6 @@ public class AnimationControl : MonoBehaviour
 
     public void AnimPlay()
     {
-        anim.Play();
+        anim.Play(); 
     }
 }

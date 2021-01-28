@@ -24,7 +24,7 @@ public static class UIRefresher
     {
         //вывести сообщение о ходе нового игрока
         UI.GOMassage.SetActive(false);
-        UI.TxtMassage.text = Constants.moving + " " + nicName;
+        UI.TxtMassage.text = Txt.moving + " " + nicName;
         UI.GOMassage.SetActive(true);
 
         UI.colorPlayer.color = color;
@@ -36,7 +36,7 @@ public static class UIRefresher
     /// </summary>
     public static void MsgInsufficientFunds()
     {
-        UI.TxtMassage.text = Constants.insufficientFunds;
+        UI.TxtMassage.text = Txt.insufficientFunds;
         UI.GOMassage.SetActive(true);
     }
 
@@ -48,6 +48,7 @@ public static class UIRefresher
         UIRefresher.ChangeColor(oldcostBuilding, UI.txtCost.text, ref UI.txtCost);
         UIRefresher.ChangeColor(costGoods, UI.txtLastMonthIncome.text, ref UI.txtIncome);
     }
+
     /// <summary>
     /// вызывает эффект изменения размера текста
     /// </summary>
@@ -55,5 +56,11 @@ public static class UIRefresher
     public static void TxtResizingEffect(Color color, TxtResizingEffect ResizingEffect)
     {
         ResizingEffect.StartCoroutine(routine: ResizingEffect.StartEffect(color));
+    }
+
+    public static void UpdateContaineResult(string result)
+    {
+        UI.txtResult.text = result;
+        UI.txtWinPlayer.text = Players.current.Name;
     }
 }

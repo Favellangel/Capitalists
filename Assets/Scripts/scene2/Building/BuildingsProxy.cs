@@ -16,5 +16,10 @@ namespace Building
         {
             BuildingController.Instance?.CountIncomeCurrentPlayer();
         }
+
+        public void Destroy()
+        {
+            BuildingController.Instance?.Destroy();
+        }
     }
 }

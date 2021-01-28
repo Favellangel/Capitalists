@@ -1,27 +1,24 @@
-﻿using UnityEngine.SceneManagement;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ContainerResult : MonoBehaviour
 {
-    [SerializeField] Transform Blocking;
     bool isWin = false;
 
     void OnEnable()
-    {
+    {        
         if (Players.all.IsAnyWin())
         {
+            PrintMsg(Txt.winner);
             isWin = true;
-            UpdateUI(Constants.winner);
         }
         else if(Players.all.IsAnyLose())
-            UpdateUI(Constants.losser);
+            PrintMsg(Txt.losser);
     }
 
-    private void UpdateUI(string result) // вынести в UIRefresher
+    private void PrintMsg(string txt)
     {
-        Blocking.transform.position = new Vector3(Blocking.transform.position.x, Blocking.transform.position.y, 0);
-        UI.txtResult.text = result; 
-        UI.txtWinPlayer.text = Players.current.Name;
+        transform.parent.position = new Vector3(transform.parent.position.x, transform.parent.position.y, 0);
+        UIRefresher.UpdateContaineResult(txt);
     }
 
     public void Click_On_Btn()
@@ -30,8 +27,8 @@ public class ContainerResult : MonoBehaviour
         {
             garbageCollector.FreeMemory();
             garbageCollector.ChangeScene();
+            return;
         }
-            else
-                gameObject.SetActive(false);       
+        gameObject.SetActive(false);       
     }
 }
