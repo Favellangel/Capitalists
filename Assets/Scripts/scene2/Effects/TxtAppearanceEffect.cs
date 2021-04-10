@@ -9,6 +9,7 @@ public class TxtAppearanceEffect : MonoBehaviour
     float textTransparence;
     bool invisibility;
     Color32 tmp;
+
     void Start()
     {
         txt = gameObject.GetComponent<Text>();
@@ -24,6 +25,7 @@ public class TxtAppearanceEffect : MonoBehaviour
         StopCoroutine(routine: PerfomEffect());
     }
 
+    // включаем эффект
     public IEnumerator PerfomEffect()
     {
         while (!invisibility)

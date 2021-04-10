@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class BlockContainerReult : MonoBehaviour
+public class BlockContainer : MonoBehaviour
 {
     public void Click_On_Empty()
     {

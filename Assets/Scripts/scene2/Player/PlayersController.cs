@@ -3,8 +3,7 @@ using UnityEngine;
 
 namespace Player
 {
-    public class PlayersController : Singleton<PlayersController>,
-                                     IPlayer, IPlayers
+    public class PlayersController
     {
         private List<Player> players;
         public int countPlayer { get; private set; }

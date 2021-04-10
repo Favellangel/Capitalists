@@ -14,7 +14,7 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
-        assembly.text = "v " + "0.0.3.3";
+        assembly.text = "v " + "0.0.3.5";
     }
 
     private void ExportData()
@@ -60,7 +60,11 @@ public class MainMenu : MonoBehaviour
             SceneManager.UnloadSceneAsync("MainMenu");
             return;
         }
-        print(Txt.NickUncorrect); // иначе выдать сообщение "ник слишком длинный или написан не коректно"
+        else
+        {
+            nicks.Clear();
+            print(Txt.NickUncorrect); // иначе выдать сообщение "ник слишком длинный или написан не коректно"
+        }        
     }
 
     public void ExitGame()

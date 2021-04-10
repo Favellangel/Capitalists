@@ -22,11 +22,15 @@ public static class UI
     public static Text txtBtnAction;
     public static Text txtLastMonthCost;
     public static Text txtLastMonthIncome;
+    public static Text txtState;
 
     // объекты из ContainerResult
     public static GameObject containerResult;
     public static Text txtResult;
     public static Text txtWinPlayer;
+
+    //объекты из ContainerCloseGame
+    public static GameObject containerCloseGame;
 
     // текстовое сообщение 
     public static GameObject GOMassage;

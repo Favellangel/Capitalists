@@ -7,9 +7,10 @@ namespace Building
     {
         [SerializeField] BuildingData.typeBuilding typeBuilding;
 
+        Transform inscriptionSale;
         [System.NonSerialized] public spritesManager spritesManager;
         [System.NonSerialized] public BuildingData data;
-        Transform inscriptionSale;
+        public Breaking breaking = new Breaking();
 
         void Start()
         {
@@ -30,11 +31,24 @@ namespace Building
                 UI.txtCost.text = data.costBuilding.ToString();
                 UI.txtIncome.text = data.costGoods.ToString();
                 UI.txtUpgrade.text = data.costUpdate.ToString();
+                SetTxtStateBuilding();
 
-                BuildingController.nameCurrent = gameObject.name;
+                BuildingsController.nameCurrent = gameObject.name;
                 UIRefresher.UpdateUICost(data.oldcostBuilding, data.oldCostGoods, data.costGoods);
                 UI.containerInfo.SetActive(true);
             }
+        }
+
+        private void SetTxtStateBuilding()
+        {
+            if (breaking.severity == Severity.none)
+                UI.txtState.text = "Отличное";
+            if (breaking.severity == Severity.easy)
+                UI.txtState.text = "Хорошее";
+            if (breaking.severity == Severity.middle)
+                UI.txtState.text = "Плохое";
+            if (breaking.severity == Severity.hard)
+                UI.txtState.text = "Аварийное";
         }
 
         public void ChangeCosts(int cost) 
@@ -67,22 +81,16 @@ namespace Building
             spritesManager.ChangeSprite(data.lvl);
         }
 
-        public void isBroken(string nameCurrentPlayer)
-        {
-            if (nameCurrentPlayer == data.owner)
-            {
-                --data.TimeToFailure;
-                if (data.TimeToFailure == 0)
-                {
-                    Broken();
-                    data.TimeToFailure = 6;
-                }
-            }
-        }
         public void Broken()
         {
-            data.oldcostBuilding = data.costBuilding;
-            ChangeCosts(0);
+            int newCost = 0;
+            if (breaking.severity == Severity.easy)
+                newCost = data.costBuilding / Random.Range(2, 3);
+            if (breaking.severity == Severity.middle)
+                newCost = data.costBuilding / Random.Range(3, 4);
+            if (breaking.severity == Severity.hard)
+                newCost = 0;
+            ChangeCosts(newCost);
             //добваить картинку гаечного ключа (а лучше анимацию)
         }
     }

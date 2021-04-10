@@ -1,51 +1,57 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
+    public ObjectController objController;
     TimeManager timeManager;
 
     private void Start()
     {
+        objController = new ObjectController();
         timeManager = new TimeManager();
-        UIRefresher.Player(Players.current.Name,
-                           Players.current.Color);
+        UIRefresher.Player(objController.players.Name,
+                           objController.players.Color);
 
         StartCoroutine(routine: timeManager.CoroutineTime());
+        StartCoroutine(routine: NextMove());
     }
 
     private void Update()
     {
-        UI.txtCapital.text = Players.current.Capital.ToString();
+        UI.txtCapital.text = objController.players.Capital.ToString();
+    }
+
+    public IEnumerator NextMove()
+    {
+        while (true)
+        {
+            if (timeManager.MovingTime <= 0)
+                NextPlayer();
+            yield return new WaitForSeconds(0.1f);
+        }
     }
 
     public void NextPlayer()
     {
-        Players.current.Income = 0;
-        Buildings.all.CountIncomeCurrentPlayer();
-        Players.current.Capital += Players.current.Income;
-
         resultGame();
-        Players.all.NextPlayer();
-        if (Players.current.Income > 0) 
-            UIRefresher.TxtResizingEffect(new Color(0, 1, 0, 1), UI.resizingEffect);
-        UIRefresher.Player(Players.current.Name, Players.current.Color);
         timeManager.UpdateTime();
-        Buildings.all.UpdateBuildings();
+        objController.UpdateObj();
 
-        timeManager.NewMonth();
+        timeManager.NewMonth(objController.players.turn);
         if(timeManager.Isquarter())
-            Buildings.all.ChangePrice();        
+            objController.buildings.ChangePrice();     
         UI.containerInfo.SetActive(false);
     }
 
     private void resultGame()
     {
-        if (Players.all.IsAnyWin())
+        if (objController.players.IsAnyWin()) 
         {
             UI.containerResult.SetActive(true);
             StopAllCoroutines();
         }
-        if (Players.all.IsAnyLose())
+        if (objController.players.IsAnyLose())
             UI.containerResult.SetActive(true);
     }
 }

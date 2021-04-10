@@ -50,7 +50,7 @@ public static class UIRefresher
     }
 
     /// <summary>
-    /// вызывает эффект изменения размера текста
+    /// вызывает эффект изменения размера и цвета текста текста
     /// </summary>
     /// <param name="ResizingEffect">ссылка, на конкретный объект</param>
     public static void TxtResizingEffect(Color color, TxtResizingEffect ResizingEffect)
@@ -58,9 +58,9 @@ public static class UIRefresher
         ResizingEffect.StartCoroutine(routine: ResizingEffect.StartEffect(color));
     }
 
-    public static void UpdateContaineResult(string result)
+    public static void UpdateContaineResult(string result, string name)
     {
         UI.txtResult.text = result;
-        UI.txtWinPlayer.text = Players.current.Name;
+        UI.txtWinPlayer.text = name;
     }
 }

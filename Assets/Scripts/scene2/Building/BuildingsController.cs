@@ -2,17 +2,18 @@
 
 namespace Building
 {
-    public class BuildingController : Singleton<BuildingController>,
-                                      IBuildings, IBuilding
+    public class BuildingsController
     {        
         private Building[] buildings = Object.FindObjectsOfType<Building>();
-        public static string nameCurrent;
+        
+        public int length => buildings.Length;
 
+        public static string nameCurrent;
         public int costUpdate => buildings[Current].data.costUpdate; 
         public int costBuilding => buildings[Current].data.costBuilding; 
         public int lvl => buildings[Current].data.lvl; 
 
-        public string owner {
+        public string Owner {
             get => buildings[Current].data.owner; 
             set => buildings[Current].data.owner = value; 
         }
@@ -25,7 +26,12 @@ namespace Building
         private int Current
         {
             get
-            {                
+            {
+                /*foreach (var building in buildings)
+                {
+                    if (building.name == nameCurrent)
+                        return ;
+                }*/
                 int i = 0;
                 while (buildings[i].name != nameCurrent)
                 {
@@ -35,6 +41,16 @@ namespace Building
                 }
                 return i;
             }
+        }
+
+        public string GetOwner(int i)
+        {
+            return buildings[i].data.owner;
+        }
+
+        public int  GetCostGoods(int i)
+        {
+            return buildings[i].data.costGoods;
         }
 
         public void ChangePrice()
@@ -51,19 +67,28 @@ namespace Building
                 buildings[i].ChangeCosts(newCost);
             }    
         }        
-        public void UpdateBuildings() 
+        public void UpdateBuildings(string name) 
         {
-            for (int i = 0; i < buildings.Length; i++)
-            {
-                buildings[i].ShowInscriptionSale(Players.current.Name); 
-                //buildings[i].isBroken(Players.current.Name); // это для логики сломанных объектов
-            }
+            foreach (var building in buildings)
+                building.ShowInscriptionSale(name);
         }
-        public void CountIncomeCurrentPlayer() // должно быть в общем для Building и player классе
-        {
-            for (int i = 0; i < buildings.Length; i++)
-            if (Players.current.Name  == buildings[i].data.owner) // если игрок владелец строения
-                Players.current.Income += buildings[i].data.costBuilding; 
+
+        public void UpdateBroken(string name)
+        {                        
+            foreach (var building in buildings)
+            {
+                if (name != building.data.owner)
+                    continue;
+                building.breaking.DecreaseTime();
+                if (building.breaking.IsBroken())
+                {
+                    building.breaking.UpdateTime();
+                    building.breaking.UpdateSeverity(lvl);
+                    building.Broken();
+                }
+                
+            }
+                
         }
 
         public void IncriptSaleVisible(bool visible)

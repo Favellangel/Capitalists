@@ -2,36 +2,24 @@
 
 public class ContainerInfo : MonoBehaviour
 {
+    ObjectController gameEvent;
+
     private void OnEnable()
     {
-        if(UI.btnAction != null)
+        gameEvent = UI.gameManager.objController;
+
+        if (UI.btnAction != null && UI.gameManager.objController != null)
         {
             setNameBtnAction();
             SetBtnUpgrate();
         }
     }
-    public void BuyingBuilding() // эти методы должны быть в объединеном классе контроллере
-    {        
-        if (Players.current.PurchaseBuilding(Buildings.current.costBuilding))
-        {
-            UIRefresher.TxtResizingEffect(new Color(1, 0, 0, 1), UI.resizingEffect);
-            if (Buildings.current.owner != Txt.neutral)
-                Players.all.SellBuilding(Buildings.current.owner, Buildings.current.costBuilding);
-            Buildings.current.owner = Players.current.Name;
-            Buildings.current.isSale = false;
-            UI.txtBtnAction.text = Txt.sell;
-            Buildings.current.IncriptSaleVisible(false);
-            Buildings.current.ChangeSpriteColor(Players.current.Color);
-        }
-        else
-            UIRefresher.MsgInsufficientFunds();
-    }
 
     public void SetBtnUpgrate()
     {
         UI.btnUpdate.SetActive(false);
-        if (Players.current.Name == Buildings.current.owner)
-            if(Buildings.current.lvl > 0 && Buildings.current.lvl  < 5)
+        if (gameEvent.players.Name == gameEvent.buildings.Owner)  
+            if(gameEvent.buildings.lvl > 0 && gameEvent.buildings.lvl < 5)  
                 UI.btnUpdate.SetActive(true);
     }
 
@@ -39,14 +27,14 @@ public class ContainerInfo : MonoBehaviour
     {
         UI.btnAction.SetActive(true);
         //   если текущий игрок владелец и объект продается         
-        if (Buildings.current.owner == Players.current.Name && Buildings.current.isSale)
+        if (gameEvent.buildings.Owner == gameEvent.players.Name && gameEvent.buildings.isSale) 
             UI.txtBtnAction.text = Txt.RemoveFromSale;
         // назв купить        если дом государственный или выставлен другими игроками
-        else if (Buildings.current.owner == Txt.neutral || Buildings.current.isSale)
+        else if (gameEvent.buildings.Owner == Txt.neutral || gameEvent.buildings.isSale) 
             UI.txtBtnAction.text = Txt.buy;
-        else if (Buildings.current.owner == Players.current.Name)
+        else if (gameEvent.buildings.Owner == gameEvent.players.Name)
         {
-            if (!Buildings.current.isSale) // продать    если дом твой и не выставлен
+            if (!gameEvent.buildings.isSale) // продать    если дом твой и не выставлен
                 UI.txtBtnAction.text = Txt.sell;
             else // снять с продажи      если дом твой и выставлен на продажу  
                 UI.txtBtnAction.text = Txt.RemoveFromSale;
@@ -58,35 +46,30 @@ public class ContainerInfo : MonoBehaviour
     public void Click_On_BtnAction()
     {
         if (UI.txtBtnAction.text == Txt.buy)
-            BuyingBuilding();
+            gameEvent.BuyingBuilding(); 
         else if (UI.txtBtnAction.text == Txt.sell)
         {
             UI.txtBtnAction.text = Txt.RemoveFromSale;
-            Buildings.current.isSale = true;
+            gameEvent.buildings.isSale = true; 
         }
         else if (UI.txtBtnAction.text == Txt.RemoveFromSale)
         {
             UI.txtBtnAction.text = Txt.sell;
-            Buildings.current.isSale = false;
+            gameEvent.buildings.isSale = false;
         }
         UI.containerInfo.SetActive(false);
     }
 
     public void Click_On_BtnUgrade()
     { 
-        if (Players.current.PurchaseBuilding(Buildings.current.costUpdate))
+        if (gameEvent.players.PurchaseBuilding(gameEvent.buildings.costUpdate)) 
         {
-            Buildings.current.Upgrade();
-            Buildings.current.ChangeSpriteColor(Players.current.Color);
+            gameEvent.buildings.Upgrade();
+            gameEvent.buildings.ChangeSpriteColor(gameEvent.players.Color);
             UI.containerInfo.SetActive(false);
             //произвести анимацию перехода строения на новый уровень
         }
         else
             UIRefresher.MsgInsufficientFunds();
-    }
-
-    public void Click_On_BtnClose()
-    {
-        UI.containerInfo.SetActive(false);
     }
 }

@@ -12,6 +12,7 @@ public class UILinker : MonoBehaviour
         GetContainerPlayer();
         GetContainerInfo();
         GetContainerResult();
+        GetContainerCloseGame();
 
         UI.GOMassage = GameObject.Find("TxtMassage");
         UI.TxtMassage = GetFrom("TxtMassage");
@@ -45,6 +46,7 @@ public class UILinker : MonoBehaviour
         UI.txtBtnAction = GetFrom("TxtBtnAction");
         UI.txtLastMonthCost = GetFrom("TxtLastMonthCost");
         UI.txtLastMonthIncome = GetFrom("TxtLastMonthIncome");
+        UI.txtState = GetFrom("TxtValueState");
         UI.containerInfo.SetActive(false);
     }
 
@@ -55,6 +57,13 @@ public class UILinker : MonoBehaviour
         UI.txtResult = GetFrom("TxtResult");
         UI.txtWinPlayer = GetFrom("TxtWinPlayer");
         UI.containerResult.SetActive(false);
+    }
+
+    private void GetContainerCloseGame()
+    {
+        //получение объектов из ContainerCloseGame
+        UI.containerCloseGame = GameObject.Find("W_CloseGame");
+        UI.containerCloseGame.SetActive(false);
     }
 
     private Text GetFrom(string name)

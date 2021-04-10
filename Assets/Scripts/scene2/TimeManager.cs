@@ -7,12 +7,10 @@ public class TimeManager
     float maxMovingTime;
     float movingTime;
 
-    GameManager gameManager; // не правильно, потом подумать как избавиться от зависимости
+    public float MovingTime => movingTime;
 
     public TimeManager()
     {
-        gameManager = GameObject.Find("GameObjects").GetComponent<GameManager>();
-
         maxMovingTime = GameInfo.movingTime;
         UpdateTime();
         month = 0;
@@ -30,9 +28,7 @@ public class TimeManager
         {
             UI.txtMovingTime.text = movingTime.ToString();
             yield return new WaitForSeconds(1);
-            movingTime -= 1;
-            if (movingTime <= 0)
-                gameManager.NextPlayer();             
+            movingTime -= 1;            
         }
     }
 
@@ -46,9 +42,9 @@ public class TimeManager
         return false;
     }
 
-    public void NewMonth()
+    public void NewMonth(int turn)
     {
-        if (Players.all.Turn == 0)
+        if (turn == 0) 
             month++;
     }
 }
